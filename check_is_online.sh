@@ -1,19 +1,28 @@
 #! /bin/bash
 
-count=1
+count=0
+errorCount=0
+maxErrorCount=3
+url="192.168.31.1"
 
-while [ $count -lt 999999999 ]
+while [ $((count++)) -lt 999999999 ]
 do
     echo "count is: $count";
 
-    ping 192.168.31.1 -c 2
+    ping $url -c 2
     if [ $? == 0 ]
     then
         echo "ping is ok";
+        errorCount=0
     else
-        echo "ping error"
+        echo "ping error: $((++errorCount))"
+
+        if [ $errorCount -gt $maxErrorCount ]
+        then
+            echo "begin reboot"
+            reboot
+        fi
     fi
 
-    count=$[ $count+1 ]
-    sleep 1;
+    sleep 3;
 done
