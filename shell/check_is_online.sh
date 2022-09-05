@@ -3,7 +3,7 @@
 count=0
 errorCount=0
 maxErrorCount=3
-sleepSecond=10
+sleepSecond=30
 url="192.168.31.1"
 logFile="check_is_online.log"
 
@@ -20,7 +20,7 @@ while [ $((count++)) -lt 999999999 ]
 do
     writeLog "count is: $count";
 
-    ping $url -c 2
+    ping $url -c 2 > /dev/null
     if [ $? == 0 ]
     then
         writeLog "ping is ok"
@@ -31,8 +31,7 @@ do
         if [ $errorCount -gt $maxErrorCount ]
         then
             writeLog "begin reboot"
-            exit 1;
-            #echo "123456" | sudo -S reboot
+            echo "123456" | sudo -S reboot
         fi
     fi
 
