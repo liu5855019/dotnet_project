@@ -11,7 +11,7 @@ logFile="check_is_online.log"
 
 [ -d $logPath ] || mkdir $logPath
 
-logFile="$logPath`date +\"%F\"`$logFile"
+logFile="$logPath`date +\"%F\"`_$logFile"
 
 [ -f $logFile ] || touch $logFile
 
