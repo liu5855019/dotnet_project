@@ -5,8 +5,8 @@ errorCount=0
 maxErrorCount=3
 sleepSecond=30
 url="192.168.31.1"
-logPath="/usr/local/check_is_online/"
-logFile="check_is_online.log"
+logPath="/var/log/check_is_online/"
+logFile="check.log"
 
 
 [ -d $logPath ] || mkdir $logPath
