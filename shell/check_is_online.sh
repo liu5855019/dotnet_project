@@ -5,7 +5,7 @@ errorCount=0
 maxErrorCount=3
 sleepSecond=30
 url="192.168.31.1"
-logPath="/tmp/check_is_online/"
+logPath="/usr/local/check_is_online/"
 logFile="check_is_online.log"
 
 
