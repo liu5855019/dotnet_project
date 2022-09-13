@@ -5,14 +5,19 @@ errorCount=0
 maxErrorCount=3
 sleepSecond=30
 url="192.168.31.1"
+logPath="/tmp/check_is_online/"
 logFile="check_is_online.log"
 
+
+[ -d $logPath ] || mkdir $logPath
+
+logFile="$logPath`date +\"%F\"`$logFile"
 
 [ -f $logFile ] || touch $logFile
 
 writeLog()
 {
-    echo "`date +"%F %T"` : $1" >> $logFile
+    echo "`date +\"%F %T\"` : $1" >> $logFile
 }
 
 
