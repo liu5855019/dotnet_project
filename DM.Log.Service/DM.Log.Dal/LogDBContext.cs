@@ -2,6 +2,7 @@ namespace DM.Log.Dal
 {
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Diagnostics;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using System;
     using System.Linq;
@@ -9,15 +10,12 @@ namespace DM.Log.Dal
 
     public class LogDBContext : BaseDBContext
     {
-        public LogDBContext(DbContextOptions<LogDBContext> options) : base(options) 
+        public LogDBContext(DbContextOptions<LogDBContext> options) : base(options, DbType.MySql)
         {
             Console.WriteLine(options);
         }
 
-        public LogDBContext() : base(DbType.MySql) 
-        {
-            Console.WriteLine("LogDBContext");
-        }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,21 +40,21 @@ namespace DM.Log.Dal
 
             optionsBuilder.EnableSensitiveDataLogging();
 
-           // optionsBuilder.UseLoggerFactory(
-           //     LoggerFactory.Create(
-           //         delegate (ILoggingBuilder builder)
-           //         {
-           //             builder.AddFilter(
-           //                 (string category, Microsoft.Extensions.Logging.LogLevel level) =>
-           //                     category == LoggerCategory<DbLoggerCategory.Database.Command>.Name
-           //                     && (level == Microsoft.Extensions.Logging.LogLevel.Debug
-           //                         || level == Microsoft.Extensions.Logging.LogLevel.Warning
-           //                         || level == Microsoft.Extensions.Logging.LogLevel.Error
-           //                         || level == Microsoft.Extensions.Logging.LogLevel.Critical)
-           //                 );
-           //         }
-           //     )
-           //);
+            optionsBuilder.UseLoggerFactory(
+                LoggerFactory.Create(
+                    delegate (ILoggingBuilder builder)
+                    {
+                        builder.AddFilter(
+                            (string category, Microsoft.Extensions.Logging.LogLevel level) =>
+                                category == LoggerCategory<DbLoggerCategory.Database.Command>.Name
+                                && (level == Microsoft.Extensions.Logging.LogLevel.Debug
+                                    || level == Microsoft.Extensions.Logging.LogLevel.Warning
+                                    || level == Microsoft.Extensions.Logging.LogLevel.Error
+                                    || level == Microsoft.Extensions.Logging.LogLevel.Critical)
+                            );
+                    }
+                )
+           );
         }
 
         #region DbSet

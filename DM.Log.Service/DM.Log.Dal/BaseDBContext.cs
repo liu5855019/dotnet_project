@@ -1,104 +1,46 @@
-
 namespace DM.Log.Dal
 {
+    using DM.Log.Common;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata;
     using Microsoft.Extensions.Configuration;
     using NLog;
     using System;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Globalization;
-    using System.Linq;
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
-    using DM.Log.Common;
-    using Oracle.ManagedDataAccess.Client;
 
     public class BaseDBContext : DbContext 
     {
-
-        private string connectionString;
+        private string connectionString { get; set; } = "Server=127.0.0.1;Database=LogDatabase;Uid=root;Pwd=123456;";
         public DbType DataBaseType { get; private set; }
 
         private readonly static Logger Logger = LogManager.GetCurrentClassLogger();
-        private static readonly IConfigurationRoot configuration = ConfigurationRoot();
+
+        private IConfigurationRoot configuration { get; set; }
 
 
-        static BaseDBContext()
+
+        public BaseDBContext(string conStr, DbType dbType = DbType.Oracle)
         {
-            var encryption = configuration.GetConnectionString("Encryption");
-            var encryptionTypes = configuration.GetConnectionString("EncryptionTypes");
-
-            if (!string.IsNullOrEmpty(encryption))
-            {
-                OracleConfiguration.SqlNetEncryptionClient = encryption;
-                OracleConfiguration.SqlNetEncryptionTypesClient = !string.IsNullOrEmpty(encryptionTypes) ? encryptionTypes : "(AES256)";
-            }
+            DataBaseType = dbType;
         }
-
-        public BaseDBContext(DbType dbType = DbType.Oracle) : this(null, dbType) { }
-
 
         /// <summary>
         /// If the DbContextOption's database connection is configured, it will use what is already configured.
         /// <para>Else, it will set appsettings.json's "DefaultConnection" as the database connection string and connect to Oracle database. </para>
         /// </summary>
-        public BaseDBContext(DbContextOptions options) : base(options)
+        public BaseDBContext(DbContextOptions options, DbType dbType) : base(options)
         {
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                SetDefaultConnectionString(fromDI: true);
-            }
-        }
-
-        public BaseDBContext(string conStr, DbType dbType = DbType.Oracle)
-        {
-            InitializeDBContext(conStr, dbType);
-        }
-
-        private void InitializeDBContext(string conStr, DbType dbType)
-        {
-            if (string.IsNullOrEmpty(conStr))
-            {
-                SetDefaultConnectionString(dbType);
-            }
-            else
-            {
-                connectionString = conStr;
-                DataBaseType = dbType;
-            }
+            this.DataBaseType= dbType;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (optionsBuilder != null)
             {
-                var logFilterMode = configuration.GetSection("DBAccessLib:LogFilter").Value;
-                //if (logFilterMode == null)
-                //{
-                //    // for backward compatiability with existing usage
-                //    // (default) includes Entity Framework Core /WARN/ERROR/CRITICAL logs
-                //    optionsBuilder.UseLoggerFactory(NlogLoggerFactoryFiltered);
-                //}
-                //else
-                //{
-                //    switch (logFilterMode.ToUpperInvariant())
-                //    {
-                //        case "DEBUG":
-                //            // includes Entity Framework Core DEBUG/WARN/ERROR/CRITICAL logs
-                //            optionsBuilder.UseLoggerFactory(NlogLoggerFactoryDebug);
-                //            break;
-                //        case "NONE":
-                //            // includes Entity Framework Core TRACE/INFO/DEBUG/WARN/ERROR/CRITICAL logs
-                //            optionsBuilder.UseLoggerFactory(NlogLoggerFactoryAll);
-                //            break;
-                //        default:
-                //            // (default) includes Entity Framework Core /WARN/ERROR/CRITICAL logs
-                //            optionsBuilder.UseLoggerFactory(NlogLoggerFactoryFiltered);
-                //            break;
-                //    }
-                //}
+                
                 // check if dependency injection has configured
                 if (!optionsBuilder.IsConfigured)
                 {
@@ -107,12 +49,12 @@ namespace DM.Log.Dal
                         case DbType.Oracle:
                             optionsBuilder.UseOracle(connectionString);
                             break;
-                        //case DbType.SqlServer:
-                        //    optionsBuilder.UseSqlServer(connectionString);
-                        //    break;
-                        //case DbType.MariaDB:
-                        //    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-                        //    break;
+                        case DbType.SqlServer:
+                            optionsBuilder.UseSqlServer(connectionString);
+                            break;
+                        case DbType.MySql:
+                            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                            break;
                         default:
                             optionsBuilder.UseOracle(connectionString);
                             break;
@@ -260,42 +202,7 @@ namespace DM.Log.Dal
             Logger.Trace("Transaction has rolled back.");
         }
 
-        /// <summary>
-        /// Sets default connection string from appsettings.json.
-        /// <para><paramref name="fromDI"/> indicates if the context is injected from dependency injection, sets to UseOracle(true/false) or DbType from appsettings.json when it is not configured.</para>
-        /// </summary>
-        private void SetDefaultConnectionString(DbType dbType = DbType.Oracle, bool fromDI = false)
-        {
-            connectionString = configuration.GetConnectionString("DefaultConnection");
-            if (fromDI)
-            {
-                if (!string.IsNullOrEmpty(configuration["UseOracle"]))
-                {
-                    if (!bool.TryParse(configuration["UseOracle"], out var useoracle))
-                    {
-                        throw new ArgumentOutOfRangeException($"Configured UseOracle ({configuration["UseOracle"]})  incorrect, possible values are true/false");
-                    }
-                    DataBaseType = useoracle ? DbType.Oracle : DbType.SqlServer;
-                }
-                else if (!string.IsNullOrEmpty(configuration["DbType"]))
-                {
-                    if (!Enum.TryParse<DbType>(configuration["DbType"], true, out var db))
-                    {
-                        var names = string.Join(',', Enum.GetNames(typeof(DbType)));
-                        throw new ArgumentOutOfRangeException($"Configured DbType ({configuration["DbType"]}) incorrect, possible values are {names}");
-                    }
-                    DataBaseType = db;
-                }
-                else
-                {
-                    DataBaseType = DbType.Oracle;
-                }
-            }
-            else
-            {
-                DataBaseType = dbType;
-            }
-        }
+
 
         private static IConfigurationRoot ConfigurationRoot()
         {

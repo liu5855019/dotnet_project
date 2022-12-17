@@ -9,6 +9,7 @@ namespace DM.Log.Service
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using NLog.Extensions.Logging;
+    using System.Linq;
 
     public class Program
     {
@@ -19,13 +20,13 @@ namespace DM.Log.Service
             // Add services to the container.
 
 
-            //builder!
-            //    .Host
-            //    .ConfigureLogging(logging =>
-            //    {
-            //        logging.ClearProviders();
-            //        logging.AddNLog(new NLogProviderOptions { IncludeActivityIdsWithBeginScope = true });
-            //    });
+            builder!
+                .Host
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddNLog(new NLogProviderOptions { IncludeActivityIdsWithBeginScope = true });
+                });
 
 
 
@@ -170,6 +171,8 @@ namespace DM.Log.Service
                 var dBContext = scope.ServiceProvider.GetRequiredService<LogDBContext>();
                 System.Console.WriteLine(dBContext);
 
+                var a = dBContext.LogInterface.FirstOrDefault();
+                System.Console.WriteLine(a);
             });
 
 
