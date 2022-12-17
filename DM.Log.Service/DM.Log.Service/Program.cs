@@ -19,13 +19,13 @@ namespace DM.Log.Service
             // Add services to the container.
 
 
-            builder!
-                .Host
-                .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.AddNLog(new NLogProviderOptions { IncludeActivityIdsWithBeginScope = true });
-                });
+            //builder!
+            //    .Host
+            //    .ConfigureLogging(logging =>
+            //    {
+            //        logging.ClearProviders();
+            //        logging.AddNLog(new NLogProviderOptions { IncludeActivityIdsWithBeginScope = true });
+            //    });
 
 
 
@@ -37,6 +37,8 @@ namespace DM.Log.Service
 
 
             var app = builder.Build();
+
+            Configure(app, app.Lifetime, app.Configuration);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -63,11 +65,6 @@ namespace DM.Log.Service
             services.AddSwaggerGen();
 
 
-
-
-            // Add services to the container.
-            //services.AddGrpc();
-            //services.AddGrpcReflection();
 
             services.AddDbContext<LogDBContext>();
 
@@ -166,17 +163,14 @@ namespace DM.Log.Service
 
 
 
-            //lifetime.ApplicationStarted.Register(() =>
-            //{
-            //    // 开启订阅
-            //    app!.Services.GetRequiredService<DteMessageBusSubscribe>().Start();
+            lifetime.ApplicationStarted.Register(() =>
+            {
+                System.Console.WriteLine("ApplicationStarted");
+                var scope = app.Services.CreateScope();
+                var dBContext = scope.ServiceProvider.GetRequiredService<LogDBContext>();
+                System.Console.WriteLine(dBContext);
 
-            //    _ = app.Services.GetService<IRunService>().RecoverAsync();
-
-            //    _ = app.Services.GetService<IRunService>().InitReportAsync();
-
-            //    _ = app.Services.CreateScope().ServiceProvider.GetService<IScenarioService>().InitResourceSettingAsync();
-            //});
+            });
 
 
 
