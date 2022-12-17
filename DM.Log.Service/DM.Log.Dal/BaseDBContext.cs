@@ -15,7 +15,7 @@ namespace DM.Log.Dal
     using DM.Log.Common;
     using Oracle.ManagedDataAccess.Client;
 
-    public class BaseDBContext : DbContext //, IUnitOfWork
+    public class BaseDBContext : DbContext 
     {
 
         private string connectionString;
@@ -152,11 +152,9 @@ namespace DM.Log.Dal
                     {
 
                         SetTableNameFromTableAttr(tp, entityType, out var tableName);
-                        SetKeyNameFromColumnAttr(tp, entityType, tableName);
                     }
                     else
                     {
-                        SetDefaultModelCreatingRule(entityType);
                     }
                 }
             }
@@ -168,34 +166,34 @@ namespace DM.Log.Dal
         /// </summary>
         public virtual new int SaveChanges()
         {
-            UpdateEntitiesOnAddOrUpdate();
+            //UpdateEntitiesOnAddOrUpdate();
             Logger.Trace("Saving changes to database.");
             return base.SaveChanges();
         }
 
-        private void UpdateEntitiesOnAddOrUpdate()
-        {
-            foreach (var entity in this.ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Added))
-            {
-                var saveEntity = entity.Entity as BaseEntity;
-                saveEntity.CacheUpdateDT = DateTime.Now;
+        //private void UpdateEntitiesOnAddOrUpdate()
+        //{
+        //    foreach (var entity in this.ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Added))
+        //    {
+        //        var saveEntity = entity.Entity as BaseEntity;
+        //        saveEntity.CacheUpdateDT = DateTime.Now;
 
-                if (entity.State == EntityState.Added)
-                {
-                    saveEntity.Version = 0;
-                }
-                else if (entity.State == EntityState.Modified)
-                {
-                    saveEntity.Version += 1;
-                }
-            }
-        }
+        //        if (entity.State == EntityState.Added)
+        //        {
+        //            saveEntity.Version = 0;
+        //        }
+        //        else if (entity.State == EntityState.Modified)
+        //        {
+        //            saveEntity.Version += 1;
+        //        }
+        //    }
+        //}
         /// <summary>
         /// Asynchronously, saves all changes made in the UnitOfWork's DbContext to the database.
         /// </summary>
         public virtual new async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            UpdateEntitiesOnAddOrUpdate();
+            //UpdateEntitiesOnAddOrUpdate();
             Logger.Trace("Saving changes to database.");
             return await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -209,7 +207,7 @@ namespace DM.Log.Dal
             if (this.Database.CurrentTransaction != null)
             {
                 Logger.Error("There is a started Transaction detected, please use the other transaction instead of starting a new Transaction.");
-                throw new MultipleTransactionException("There is a started Transaction detected, please use the other transaction instead of starting a new Transaction.");
+                //throw new MultipleTransactionException("There is a started Transaction detected, please use the other transaction instead of starting a new Transaction.");
             }
             this.Database.BeginTransaction();
             Logger.Trace("Transaction has began.");
@@ -224,7 +222,7 @@ namespace DM.Log.Dal
             if (this.Database.CurrentTransaction == null)
             {
                 Logger.Error("Transaction does not exists. Please create one with UnitOfWork.BeginTransaction()");
-                throw new MultipleTransactionException("Transaction does not exists. Please create one with UnitOfWork.BeginTransaction()");
+                //throw new MultipleTransactionException("Transaction does not exists. Please create one with UnitOfWork.BeginTransaction()");
             }
             SaveChanges();
             this.Database.CommitTransaction();
@@ -240,7 +238,7 @@ namespace DM.Log.Dal
             if (this.Database.CurrentTransaction == null)
             {
                 Logger.Error("Transaction does not exists. Please create one with UnitOfWork.BeginTransaction()");
-                throw new MultipleTransactionException("Transaction does not exists. Please create one with UnitOfWork.BeginTransaction()");
+                //throw new MultipleTransactionException("Transaction does not exists. Please create one with UnitOfWork.BeginTransaction()");
             }
             await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             this.Database.CommitTransaction();
@@ -256,7 +254,7 @@ namespace DM.Log.Dal
             if (this.Database.CurrentTransaction == null)
             {
                 Logger.Error("Transaction does not exists. Please create one with UnitOfWork.BeginTransaction()");
-                throw new MultipleTransactionException("Transaction does not exists. Please create one with UnitOfWork.BeginTransaction()");
+                //throw new MultipleTransactionException("Transaction does not exists. Please create one with UnitOfWork.BeginTransaction()");
             }
             this.Database.RollbackTransaction();
             Logger.Trace("Transaction has rolled back.");
