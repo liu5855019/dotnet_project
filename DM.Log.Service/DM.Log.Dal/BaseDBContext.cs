@@ -13,7 +13,7 @@ namespace DM.Log.Dal
 
     public class BaseDBContext : DbContext 
     {
-        private string connectionString { get; set; } = "Server=127.0.0.1;Database=LogDatabase;Uid=root;Pwd=123456;";
+        private string connectionString { get; set; } = "Server=127.0.0.1;Database=logdb;Uid=root;Pwd=123456;";
         public DbType DataBaseType { get; private set; }
 
         private readonly static Logger Logger = LogManager.GetCurrentClassLogger();
@@ -53,7 +53,7 @@ namespace DM.Log.Dal
                             optionsBuilder.UseSqlServer(connectionString);
                             break;
                         case DbType.MySql:
-                            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)); //, ServerVersion.AutoDetect(connectionString)
                             break;
                         default:
                             optionsBuilder.UseOracle(connectionString);
