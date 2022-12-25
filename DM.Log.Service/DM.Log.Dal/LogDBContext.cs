@@ -2,11 +2,11 @@ namespace DM.Log.Dal
 {
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Diagnostics;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using System;
     using System.Linq;
     using System.Reflection;
+    using DM.Log.Entity;
 
     public class LogDBContext : BaseDBContext
     {

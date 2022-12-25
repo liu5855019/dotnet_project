@@ -4,6 +4,7 @@ namespace DM.Log.Dal
 {
     using Microsoft.EntityFrameworkCore;
     using System.ComponentModel.DataAnnotations;
+    using DM.BaseEntity;
 
 
     public class LogInterface : BaseEntity
