@@ -1,10 +1,13 @@
 ﻿namespace DM.BaseEntity
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
 
     public class BaseEntity
     {
         public long Id { get; set; }
+
+        public long Version { get; set; }
 
         [StringLength(50)]
         public string CreateBy { get; set; }

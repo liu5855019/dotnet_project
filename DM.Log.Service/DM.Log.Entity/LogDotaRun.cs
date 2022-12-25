@@ -2,7 +2,7 @@
 {
     using BaseEntity;
 
-    public class DotaRunLog : BaseEntity
+    public class LogDotaRun : BaseEntity
     {
         
     }

@@ -1,5 +1,6 @@
 namespace DM.Log.Dal
 {
+    using DM.BaseEntity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
