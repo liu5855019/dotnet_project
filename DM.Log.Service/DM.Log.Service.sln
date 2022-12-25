@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DM.Log.Dal", "DM.Log.Dal\DM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DM.Log.Common", "DM.Log.Common\DM.Log.Common.csproj", "{CFFF038B-7C6B-4FD2-8C93-9B2DF6E8E4D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DM.BaseEntity", "DM.BaseEntity\DM.BaseEntity.csproj", "{3ADB2C23-1337-40D7-9DD4-98E3E59F158A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DM.Log.Entity", "DM.Log.Entity\DM.Log.Entity.csproj", "{2B856B00-B73E-4FF1-85E8-4B664033EB07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DM.Log.Common\DM.Log.Common.csproj" />
+    <ProjectReference Include="..\DM.BaseEntity\DM.BaseEntity.csproj" />
   </ItemGroup>
 
 </Project>
