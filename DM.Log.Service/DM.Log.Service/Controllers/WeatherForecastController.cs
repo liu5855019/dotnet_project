@@ -22,8 +22,8 @@ namespace DM.Log.Service.Controllers
         {
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet(Name = "GetWeatherForecast555")]
+        public IEnumerable<WeatherForecast> Get1()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
