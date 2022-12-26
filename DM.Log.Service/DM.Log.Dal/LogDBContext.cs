@@ -60,6 +60,7 @@ namespace DM.Log.Dal
         #region DbSet
 
         public DbSet<LogInterface> LogInterface { get; set; }
+        public DbSet<LogDotaRun> LogDotaRun { get; set; }
 
         #endregion
 
