@@ -2,6 +2,7 @@
 
 namespace DM.Log.Service
 {
+    using DM.Log.Common;
     using DM.Log.Dal;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.Configuration;
@@ -68,6 +69,8 @@ namespace DM.Log.Service
 
 
             services.AddDbContext<LogDBContext>();
+
+            services.AddScoped<RequestInfo>();
 
             //// add grpc client
             //var optionBuilder = new GrpcClientOptionBuilder(configuration);
