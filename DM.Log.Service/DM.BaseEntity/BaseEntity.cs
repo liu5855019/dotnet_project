@@ -9,6 +9,8 @@
 
         public long Version { get; set; }
 
+        public long RequestId { get; set; }
+
         [StringLength(50)]
         public string CreateBy { get; set; }
 
