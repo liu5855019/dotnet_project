@@ -70,7 +70,7 @@ namespace DM.Log.Service
 
             services.AddDbContext<LogDBContext>();
 
-            services.AddScoped<RequestInfo>();
+            //services.AddScoped<RequestInfo>();
 
             //// add grpc client
             //var optionBuilder = new GrpcClientOptionBuilder(configuration);
