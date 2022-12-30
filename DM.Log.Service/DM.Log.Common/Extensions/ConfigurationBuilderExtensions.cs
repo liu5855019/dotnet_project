@@ -97,5 +97,10 @@ namespace DM.Log.Common
         {
             return builder.AddJsonFileAndEnvironmentVariables("appsettings.json", isOptional, reloadOnChange).AddIncludedJsonFile(isOptional: isOptional, reloadOnChange: reloadOnChange);
         }
+
+        public static IConfigurationRoot ConfigurationRoot()
+        {
+            return new ConfigurationBuilder().AddAppsettingsJsonFileAndEnvironmentVariables().Build();
+        }
     }
 }

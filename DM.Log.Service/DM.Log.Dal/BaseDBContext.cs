@@ -13,34 +13,27 @@ namespace DM.Log.Dal
 
     public class BaseDBContext : DbContext 
     {
-        private string connectionString { get; set; } = "Server=127.0.0.1;Database=logdb;Uid=root;Pwd=123456;";
-        public DbType DataBaseType { get; private set; }
-
         private readonly static Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private IConfigurationRoot configuration { get; set; }
-
-
-
-        public BaseDBContext(string conStr, DbType dbType = DbType.Oracle)
-        {
-            DataBaseType = dbType;
-        }
+        public string connectionString { get; private set; }
+        public DbType DataBaseType { get; private set; }
 
         /// <summary>
         /// If the DbContextOption's database connection is configured, it will use what is already configured.
         /// <para>Else, it will set appsettings.json's "DefaultConnection" as the database connection string and connect to Oracle database. </para>
         /// </summary>
-        public BaseDBContext(DbContextOptions options, DbType dbType) : base(options)
+        public BaseDBContext(DbContextOptions options) : base(options)
         {
-            this.DataBaseType= dbType;
+            var configuration = ConfigurationBuilderExtensions.ConfigurationRoot();
+
+            this.connectionString = configuration.GetSection("ConnectionStrings:DefaultConnection").Value;
+            this.DataBaseType = Enum.Parse<DbType>(configuration.GetSection("ConnectionStrings:DefaultType").Value);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (optionsBuilder != null)
             {
-                
                 // check if dependency injection has configured
                 if (!optionsBuilder.IsConfigured)
                 {
@@ -53,7 +46,7 @@ namespace DM.Log.Dal
                             optionsBuilder.UseSqlServer(connectionString);
                             break;
                         case DbType.MySql:
-                            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)); //, ServerVersion.AutoDetect(connectionString)
+                            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
                             break;
                         default:
                             optionsBuilder.UseOracle(connectionString);
@@ -204,10 +197,7 @@ namespace DM.Log.Dal
 
 
 
-        private static IConfigurationRoot ConfigurationRoot()
-        {
-            return new ConfigurationBuilder().AddAppsettingsJsonFileAndEnvironmentVariables().Build();
-        }
+
 
     }
 }

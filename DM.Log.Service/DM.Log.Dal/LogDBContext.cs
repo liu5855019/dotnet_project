@@ -10,7 +10,7 @@ namespace DM.Log.Dal
 
     public class LogDBContext : BaseDBContext
     {
-        public LogDBContext(DbContextOptions<LogDBContext> options) : base(options, DbType.MySql)
+        public LogDBContext(DbContextOptions<LogDBContext> options) : base(options)
         {
             Console.WriteLine(options);
         }
