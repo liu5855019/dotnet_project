@@ -43,7 +43,7 @@ namespace DM.Log.Service
             Configure(app, app.Lifetime, app.Configuration);
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            //if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
