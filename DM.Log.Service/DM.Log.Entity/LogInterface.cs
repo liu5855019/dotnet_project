@@ -1,23 +1,24 @@
-
-
-namespace DM.Log.Dal
+namespace DM.Log.Entity
 {
+    using DM.BaseEntity;
     using Microsoft.EntityFrameworkCore;
     using System.ComponentModel.DataAnnotations;
-    using DM.BaseEntity;
 
 
     public class LogInterface : BaseEntity
     {
         [Required]
         [StringLength(50)]
-        [Comment("Scenario Title")]
-        public string Title { get; set; }
+        [Comment("Service Name")]
+        public string Service { get; set; }
 
         [Required]
-        [StringLength(500)]
-        [Comment("Scenario Description")]
-        public string Description { get; set; }
+        [StringLength(100)]
+        [Comment("Interface Name")]
+        public string Name { get; set; }
 
+        [StringLength(500)]
+        [Comment("Remark")]
+        public string Remark { get; set; }
     }
 }
