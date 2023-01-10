@@ -30,8 +30,8 @@
             logger.Debug( $"{LogConsts.Start}; AddLogAsync(); logDotaRun:{logDotaRun.ToJsonString()}");
             try
             {
-                logDotaRun.DeviceId.CheckNumber(nameof(logDotaRun.DeviceId));
-                logDotaRun.GroupId.CheckNumber(nameof(logDotaRun.GroupId));
+                logDotaRun.DeviceId.CheckPara(nameof(logDotaRun.DeviceId));
+                logDotaRun.GroupId.CheckPara(nameof(logDotaRun.GroupId));
 
                 logDotaRun.SetInsertProperties(this.RequestInfo);
 
@@ -49,14 +49,14 @@
             return logDotaRun;
         }
 
-        public async Task<List<LogDotaRun>> SearchLogAsync(long DeviceId, long GroupId)
+        public async Task<List<LogDotaRun>> SearchLogAsync(string DeviceId, string GroupId)
         {
-            DeviceId.CheckNumber(nameof(DeviceId));
+            DeviceId.CheckPara(nameof(DeviceId));
 
             var list = await this.dBContext
                                  .LogDotaRun
                                  .Where(w => w.DeviceId == DeviceId)
-                                 .WhereIf(w => w.GroupId == GroupId, GroupId > 0)
+                                 .WhereIf(w => w.GroupId == GroupId, !string.IsNullOrWhiteSpace(GroupId))
                                  .ToListAsync();
 
             logger.Debug($"{LogConsts.End}; AddLogAsync(); Count:{list.Count}");

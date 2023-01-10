@@ -25,7 +25,7 @@ namespace DM.Log.Service.Controllers
         }
 
         [HttpGet]
-        public async Task<LogDotaRun> AddLog(long deviceId, long groupId, bool isShop)
+        public async Task<LogDotaRun> AddLog(string deviceId, string groupId, bool isShop)
         {
             var result = await this.dotaRunService.AddLogAsync(new LogDotaRun
             {
@@ -39,7 +39,7 @@ namespace DM.Log.Service.Controllers
         }
 
         [HttpGet]
-        public async Task<List<LogDotaRun>> SearchLog(long deviceId, long groupId)
+        public async Task<List<LogDotaRun>> SearchLog(string deviceId, string groupId)
         {
             return await this.dotaRunService.SearchLogAsync(deviceId, groupId);
         }

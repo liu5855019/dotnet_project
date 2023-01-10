@@ -9,6 +9,6 @@
     {
         Task<LogDotaRun> AddLogAsync(LogDotaRun logDotaRun);
 
-        Task<List<LogDotaRun>> SearchLogAsync(long DeviceId, long GroupId);
+        Task<List<LogDotaRun>> SearchLogAsync(string DeviceId, string GroupId);
     }
 }

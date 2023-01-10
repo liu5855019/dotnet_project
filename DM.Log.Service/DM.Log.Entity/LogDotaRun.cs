@@ -4,9 +4,9 @@
 
     public class LogDotaRun : BaseEntity
     {
-        public long DeviceId { get; set; }
+        public string DeviceId { get; set; }
 
-        public long GroupId { get; set; }
+        public string GroupId { get; set; }
 
         public bool IsShop { get; set; }
     }
