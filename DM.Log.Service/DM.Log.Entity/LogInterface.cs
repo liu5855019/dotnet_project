@@ -18,6 +18,10 @@ namespace DM.Log.Entity
         public string Name { get; set; }
 
         [StringLength(500)]
+        [Comment("Para")]
+        public string Value { get; set; }
+
+        [StringLength(500)]
         [Comment("Remark")]
         public string Remark { get; set; }
     }

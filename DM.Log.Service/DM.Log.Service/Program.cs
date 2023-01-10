@@ -70,14 +70,7 @@ namespace DM.Log.Service
             //// add grpc client
 
             services.AddScoped<IDotaRunService, DotaRunService>();
-            //services.AddScoped<IScenarioRecordService, ScenarioRecordService>();
-            //services.AddScoped<IncidentService>();
-            //services.AddScoped<RmsService>();
-            //services.AddScoped<PvnsService>();
-            //services.AddScoped<ResStatusService>();
-            //services.AddScoped<GisService>();
-            //services.AddScoped<DumpService>();
-            //services.AddScoped<IFileService, FileService>();
+            services.AddScoped<ILogInterfaceService, LogInterfaceService>();
 
             //services.AddSingleton<IRunService, RunService>();
             //services.AddSingleton<IDteMessageBusPublish, DteMessageBusPublish>();

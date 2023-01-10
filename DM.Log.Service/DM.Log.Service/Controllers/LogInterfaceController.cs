@@ -1,55 +1,48 @@
 ﻿
 namespace DM.Log.Service.Controllers
 {
+    using DM.Log.Biz.Interface;
+    using DM.Log.Common;
+    using DM.Log.Entity;
     using Microsoft.AspNetCore.Mvc;
     using NLog;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     [ApiController]
     [Route("[controller]/[action]")]
     public class LogInterfaceController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger logger = LogManager.GetCurrentClassLogger();
 
-        public LogInterfaceController()
+        private readonly ILogInterfaceService service;
+
+        public LogInterfaceController(ILogInterfaceService service)
         {
+            this.service = service;
         }
 
         [HttpGet]
-        public List<string> Get1(string name1, string name2, long age)
+        public async Task<LogInterface> AddLog(string service, string name, string value, string remark)
         {
-            return new List<string> { name1, name2, age.ToString() };
+            var result = await this.service.AddLogAsync(new LogInterface
+            { 
+                Service = service,
+                Name = name,
+                Value = value,
+                Remark = remark
+            });
+
+            logger.Debug($"{LogConsts.End}; AddLog(); result:{result.ToJsonString()}");
+            return result;
         }
 
-        [HttpGet(Name = "GetWeatherForecast2")]
-        public IEnumerable<WeatherForecast> Get2()
+        [HttpGet]
+        public async Task<List<LogInterface>> SearchLog(string service, string name)
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
-        }
-
-        [HttpPost(Name = "GetWeatherForecast3")]
-        public IEnumerable<WeatherForecast> Get3()
-        {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return await this.service.SearchLogAsync(service, name);
         }
     }
 }

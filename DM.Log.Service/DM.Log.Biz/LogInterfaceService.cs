@@ -8,10 +8,9 @@
     using NLog;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
-    public class LogInterfaceService 
+    public class LogInterfaceService : ILogInterfaceService
     {
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         private readonly LogDBContext dBContext;
@@ -25,45 +24,42 @@
             this.dBContext = dBContext;
         }
 
-        //public async Task<LogDotaRun> AddLogAsync(LogInterface logInterface)
-        //{
-        //    logger.Debug( $"{LogConsts.Start}; AddLogAsync(); incLog:{logDotaRun.ToJsonString()}");
-        //    try
-        //    {
-        //        logDotaRun.DeviceId.CheckNumber(nameof(logDotaRun.DeviceId));
-        //        logDotaRun.GroupId.CheckNumber(nameof(logDotaRun.GroupId));
+        public async Task<LogInterface> AddLogAsync(LogInterface logInterface)
+        {
+            logger.Debug($"{LogConsts.Start}; AddLogAsync(); logInterface:{logInterface.ToJsonString()}");
+            try
+            {
+                logInterface.Service.CheckPara(nameof(logInterface.Service));
+                logInterface.Name.CheckPara(nameof(logInterface.Name));
 
-        //        logDotaRun.SetInsertProperties(this.RequestInfo);
+                logInterface.SetInsertProperties(this.RequestInfo);
 
-        //        await this.dBContext.AddAsync(logDotaRun);
-        //        var count = await this.dBContext.SaveChangesAsync();
+                await this.dBContext.LogInterface.AddAsync(logInterface);
+                var count = await this.dBContext.SaveChangesAsync();
 
-        //        logger.Debug($"{LogConsts.End}; AddLogAsync(); Count:{count}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logger.Error(ex, $"{LogConsts.End}; AddLogAsync(); Error:{ex.Message}");
-        //        throw;
-        //    }
+                logger.Debug($"{LogConsts.End}; AddLogAsync(); Count:{count}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, $"{LogConsts.End}; AddLogAsync(); Error:{ex.Message}");
+                throw;
+            }
 
-        //    return logDotaRun;
-        //}
-
-        //public async Task<List<LogDotaRun>> SearchLogAsync(long DeviceId, long GroupId)
-        //{
-        //    DeviceId.CheckNumber(nameof(DeviceId));
-
-        //    var list = await this.dBContext
-        //                         .LogDotaRun
-        //                         .Where(w => w.DeviceId == DeviceId)
-        //                         .WhereIf(w => w.GroupId == GroupId, GroupId > 0)
-        //                         .ToListAsync();
-
-        //    logger.Debug($"{LogConsts.End}; AddLogAsync(); Count:{list.Count}");
-
-        //    return list;
-        //}
+            return logInterface;
+        }
 
 
+        public async Task<List<LogInterface>> SearchLogAsync(string service, string name)
+        {
+            var list = await this.dBContext
+                                 .LogInterface
+                                 .WhereIf(w => w.Service == service, !string.IsNullOrWhiteSpace(service))
+                                 .WhereIf(w => w.Name == name, !string.IsNullOrWhiteSpace(name))
+                                 .ToListAsync();
+
+            logger.Debug($"{LogConsts.End}; AddLogAsync(); Count:{list.Count}");
+
+            return list;
+        }
     }
 }
