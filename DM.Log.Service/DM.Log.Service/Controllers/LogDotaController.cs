@@ -25,20 +25,24 @@ namespace DM.Log.Service.Controllers
         }
 
         [HttpGet]
-        public async Task<LogDotaRun> AddLog(long DeviceId, long GroupId, bool IsShop)
+        public async Task<LogDotaRun> AddLog(long deviceId, long groupId, bool isShop)
         {
             var result = await this.dotaRunService.AddLogAsync(new LogDotaRun
             {
-                DeviceId = DeviceId,
-                GroupId = GroupId,
-                IsShop = IsShop
+                DeviceId = deviceId,
+                GroupId = groupId,
+                IsShop = isShop
             });
 
             logger.Debug($"{LogConsts.End}; AddLog(); result:{result.ToJsonString()}");
             return result;
         }
 
-
+        [HttpGet]
+        public async Task<List<LogDotaRun>> SearchLog(long deviceId, long groupId)
+        {
+            return await this.dotaRunService.SearchLogAsync(deviceId, groupId);
+        }
 
     }
 }

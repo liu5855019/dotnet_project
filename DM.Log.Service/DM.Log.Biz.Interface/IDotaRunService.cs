@@ -2,10 +2,13 @@
 {
     using DM.Log.Common;
     using DM.Log.Entity;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public interface IDotaRunService : IRequestInfo
     {
         Task<LogDotaRun> AddLogAsync(LogDotaRun logDotaRun);
+
+        Task<List<LogDotaRun>> SearchLogAsync(long DeviceId, long GroupId);
     }
 }
