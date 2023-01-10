@@ -5,6 +5,7 @@
     using DM.Log.Dal;
     using DM.Log.Entity;
     using NLog;
+    using System;
     using System.Threading.Tasks;
 
     public class DotaRunService : IDotaRunService
@@ -21,42 +22,25 @@
             this.dBContext = dBContext;
         }
 
-        //public async Task<LogDotaRun> AddLogAsync(LogDotaRun logDotaRun)
-        //{
-        //    logger.Trace($"{LogConsts.Start}; AddIncidentLogAsync(); incLog:{logDotaRun.ToJsonString()}");
-        //    try
-        //    {
+        public async Task<LogDotaRun> AddLogAsync(LogDotaRun logDotaRun)
+        {
+            logger.Debug( $"{LogConsts.Start}; AddLogAsync(); incLog:{logDotaRun.ToJsonString()}");
+            try
+            {
+                logDotaRun.SetInsertProperties(this.RequestInfo);
 
+                await this.dBContext.AddAsync(logDotaRun);
+                var count = await this.dBContext.SaveChangesAsync();
 
-        //        // 初始化字段
-        //        incLog.Id = 0;
-        //        incLog.EventDT = DateTime.Now;
-        //        incLog.CreationDT = DateTime.Now;
-        //        incLog.LastUpdateDT = DateTime.Now;
-        //        incLog.OperationId = string.IsNullOrEmpty(incLog.OperationId) ? this.RequestInfo.OperatorId : incLog.OperationId;
-        //        incLog.WorkStationId = string.IsNullOrEmpty(incLog.WorkStationId) ? this.RequestInfo.ConsoleId : incLog.WorkStationId;
+                logger.Debug($"{LogConsts.End}; AddLogAsync(); Count:{count}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, $"{LogConsts.End}; AddLogAsync(); Error:{ex.Message}");
+            }
 
-        //        if (incLog.LogFields?.Any() == true)
-        //        {
-        //            foreach (var logField in incLog.LogFields)
-        //            {
-        //                logField.Id = 0;
-        //            }
-        //        }
-
-        //        await this.incidentLogRepository.AddAsync(incLog);
-        //        var count = await this.dBContext.SaveChangesAsync();
-
-        //        logger.Trace(this.RequestInfo.RequestId, $"{LogConsts.LOG_END}; AddIncidentLogAsync(); Count:{count}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logger.Error(this.RequestInfo.RequestId, ex, $"{LogConsts.LOG_END}; AddIncidentLogAsync(); Error:{ex.Message}");
-        //        throw;
-        //    }
-
-        //    return incLog;
-        //}
+            return logDotaRun;
+        }
 
         //public async Task<List<IncidentLog>> AddIncidentLogsAsync(List<IncidentLog> incLogs)
         //{

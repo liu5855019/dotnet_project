@@ -1,60 +1,45 @@
 ﻿
 namespace DM.Log.Service.Controllers
 {
+    using DM.Log.Biz.Interface;
+    using DM.Log.Common;
     using DM.Log.Entity;
     using Microsoft.AspNetCore.Mvc;
     using NLog;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     [ApiController]
     [Route("[controller]/[action]")]
     public class LogDotaController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly ILogger logger = LogManager.GetCurrentClassLogger();
+        private readonly IDotaRunService dotaRunService;
 
-        public LogDotaController()
+        public LogDotaController(IDotaRunService dotaRunService)
         {
+            this.dotaRunService = dotaRunService;
         }
 
         [HttpGet]
-        public List<string> AddLog(long DeviceId, long GroupId, bool IsShop)
+        public async Task<LogDotaRun> AddLog(long DeviceId, long GroupId, bool IsShop)
         {
-                    
-        //LogDotaRun
-
-            return new List<string> {  };
-        }
-
-        [HttpGet(Name = "GetWeatherForecast4")]
-        public IEnumerable<WeatherForecast> Get2()
-        {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var result = await this.dotaRunService.AddLogAsync(new LogDotaRun
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                DeviceId = DeviceId,
+                GroupId = GroupId,
+                IsShop = IsShop
+            });
+
+            logger.Debug($"{LogConsts.End}; AddLog(); result:{result.ToJsonString()}");
+            return result;
         }
 
-        [HttpPost(Name = "GetWeatherForecast5")]
-        public IEnumerable<WeatherForecast> Get3()
-        {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
-        }
+
+
     }
 }
 

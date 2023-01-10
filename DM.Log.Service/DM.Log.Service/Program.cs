@@ -2,7 +2,8 @@
 
 namespace DM.Log.Service
 {
-    using DM.Log.Common;
+    using DM.Log.Biz;
+    using DM.Log.Biz.Interface;
     using DM.Log.Dal;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.Configuration;
@@ -19,8 +20,6 @@ namespace DM.Log.Service
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
-
             builder!
                 .Host
                 .ConfigureLogging(logging =>
@@ -29,13 +28,8 @@ namespace DM.Log.Service
                     logging.AddNLog(new NLogProviderOptions { IncludeActivityIdsWithBeginScope = true });
                 });
 
-
-
             //builder.Services.setdbcontext
-
             ConfigureServices(builder.Services, builder.Configuration);
-
-
 
 
             var app = builder.Build();
@@ -67,23 +61,15 @@ namespace DM.Log.Service
             services.AddSwaggerGen();
 
 
-
             services.AddDbContext<LogDBContext>();
 
             //services.AddScoped<RequestInfo>();
-
-            //// add grpc client
-            //var optionBuilder = new GrpcClientOptionBuilder(configuration);
-            //services.AddGrpcGroupClient(optionBuilder.CurrentOption);
-            //services.AddHttpClientProxyService(configuration.GetSection("HttpClientOption"), null);
-            //// health check
-            //services.AddTransient<IHttp1GrpcHealthService, Http1GrpcHealthService>();
-            //services.AddTransient<IPublisher, PublisherImpl>();
-
-
             //services.AddScoped<RequestInfo>();
             //services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
-            //services.AddScoped<IScenarioService, ScenarioService>();
+
+            //// add grpc client
+
+            services.AddScoped<IDotaRunService, DotaRunService>();
             //services.AddScoped<IScenarioRecordService, ScenarioRecordService>();
             //services.AddScoped<IncidentService>();
             //services.AddScoped<RmsService>();
