@@ -64,6 +64,21 @@
             return list;
         }
 
+        public async Task<List<string>> GetDeviceList()
+        {
+
+            var list = await this.dBContext
+                                 .LogDotaRun
+                                 .DistinctBy(w => w.DeviceId)
+                                 .Select(w => w.DeviceId)
+                                 .ToListAsync();
+                                
+            logger.Debug($"{LogConsts.End}; AddLogAsync(); Count:{list.Count}");
+
+            return list;
+        }
+
+
 
     }
 }
