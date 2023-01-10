@@ -27,7 +27,7 @@
 
         public async Task<LogDotaRun> AddLogAsync(LogDotaRun logDotaRun)
         {
-            logger.Debug( $"{LogConsts.Start}; AddLogAsync(); incLog:{logDotaRun.ToJsonString()}");
+            logger.Debug( $"{LogConsts.Start}; AddLogAsync(); logDotaRun:{logDotaRun.ToJsonString()}");
             try
             {
                 logDotaRun.DeviceId.CheckNumber(nameof(logDotaRun.DeviceId));
