@@ -55,6 +55,7 @@
 
             var list = await this.dBContext
                                  .LogDotaRun
+                                 .AsNoTracking()
                                  .Where(w => w.DeviceId == DeviceId)
                                  .WhereIf(w => w.GroupId == GroupId, !string.IsNullOrWhiteSpace(GroupId))
                                  .ToListAsync();
@@ -64,18 +65,49 @@
             return list;
         }
 
-        public async Task<List<string>> GetDeviceList()
+        public async Task<List<string>> GetDeviceListAsync()
         {
-
-            var list = await this.dBContext
+            try
+            {
+                logger.Debug($"{LogConsts.End}; GetDeviceListAsync(); start sql");
+                var list = await this.dBContext
                                  .LogDotaRun
-                                 .DistinctBy(w => w.DeviceId)
-                                 .Select(w => w.DeviceId)
+                                 .AsNoTracking()
+                                 .GroupBy(w => w.DeviceId)
+                                 .Select(w => w.Key)
                                  .ToListAsync();
-                                
-            logger.Debug($"{LogConsts.End}; AddLogAsync(); Count:{list.Count}");
 
-            return list;
+                logger.Debug($"{LogConsts.End}; GetDeviceListAsync(); Count:{list.Count}");
+                return list;
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"GetDeviceListAsync(); Error:{ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<NameAndCount>> GetGroupListByDeviceIdAsync(string deviceId)
+        {
+            try
+            {
+                logger.Debug($"{LogConsts.End}; GetGroupListByDeviceIdAsync(); start sql");
+                var list = await this.dBContext
+                                    .LogDotaRun
+                                    .AsNoTracking()
+                                    .Where(w => w.DeviceId == deviceId)
+                                    .GroupBy(w => w.GroupId)
+                                    .Select(w => new NameAndCount() { Name = w.Key, Count = w.Count() })
+                                    .ToListAsync();
+
+                logger.Debug($"{LogConsts.End}; GetGroupListByDeviceIdAsync(); Count:{list.Count}");
+                return list;
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"GetGroupListByDeviceIdAsync(); Error:{ex.Message}");
+                throw;
+            }
         }
 
 

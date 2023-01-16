@@ -44,6 +44,18 @@ namespace DM.Log.Service.Controllers
             return await this.dotaRunService.SearchLogAsync(deviceId, groupId);
         }
 
+        [HttpGet]
+        public async Task<List<string>> GetDeviceList()
+        {
+            return await this.dotaRunService.GetDeviceListAsync();
+        }
+
+        [HttpGet]
+        public async Task<List<NameAndCount>> GetGroupListByDeviceId(string deviceId)
+        { 
+            return await this.dotaRunService.GetGroupListByDeviceIdAsync(deviceId);
+        }
+
     }
 }
 
