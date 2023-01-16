@@ -4,7 +4,7 @@ namespace DM.Log.Entity
     using Microsoft.EntityFrameworkCore;
     using System.ComponentModel.DataAnnotations;
 
-
+    [Index(nameof(Service), nameof(Name))]
     public class LogInterface : BaseEntity
     {
         [Required]
