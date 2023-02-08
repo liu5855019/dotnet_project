@@ -351,3 +351,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /DM.Log.Service/DM.Log.Service/appsettings.Development.json
+DM.Log.Service/DM.Log.Service/.config/dotnet-tools.json
