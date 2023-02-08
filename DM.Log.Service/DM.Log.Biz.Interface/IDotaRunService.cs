@@ -12,7 +12,7 @@
         Task<List<LogDotaRun>> SearchLogAsync(string DeviceId, string GroupId);
 
 
-        Task<List<string>> GetDeviceListAsync();
+        Task<Response<List<string>>> GetDeviceListAsync();
         Task<List<NameAndCount>> GetGroupListByDeviceIdAsync(string deviceId);
     }
 }

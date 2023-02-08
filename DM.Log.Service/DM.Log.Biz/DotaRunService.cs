@@ -1,15 +1,15 @@
 ﻿namespace DM.Log.Biz
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using DM.Log.Biz.Interface;
     using DM.Log.Common;
     using DM.Log.Dal;
     using DM.Log.Entity;
     using Microsoft.EntityFrameworkCore;
     using NLog;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class DotaRunService : IDotaRunService
     {
@@ -65,8 +65,9 @@
             return list;
         }
 
-        public async Task<List<string>> GetDeviceListAsync()
+        public async Task<Response<List<string>>> GetDeviceListAsync()
         {
+            var response = new Response<List<string>>();
             try
             {
                 logger.Debug($"{LogConsts.End}; GetDeviceListAsync(); start sql");
@@ -78,7 +79,7 @@
                                  .ToListAsync();
 
                 logger.Debug($"{LogConsts.End}; GetDeviceListAsync(); Count:{list.Count}");
-                return list;
+                return response.SetSuccess(list);
             }
             catch (Exception ex)
             {
