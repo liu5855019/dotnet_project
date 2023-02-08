@@ -3,7 +3,6 @@ namespace DM.Log.Dal
     using DM.Log.Common;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata;
-    using Microsoft.Extensions.Configuration;
     using NLog;
     using System;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -15,7 +14,7 @@ namespace DM.Log.Dal
     {
         private readonly static Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public string connectionString { get; private set; }
+        public string ConnectionString { get; private set; }
         public DbType DataBaseType { get; private set; }
 
         /// <summary>
@@ -26,8 +25,11 @@ namespace DM.Log.Dal
         {
             var configuration = ConfigurationBuilderExtensions.ConfigurationRoot();
 
-            this.connectionString = configuration.GetSection("ConnectionStrings:DefaultConnection").Value;
+            this.ConnectionString = configuration.GetSection("ConnectionStrings:DefaultConnection").Value;
             this.DataBaseType = Enum.Parse<DbType>(configuration.GetSection("ConnectionStrings:DefaultType").Value);
+
+            Console.WriteLine(this.ConnectionString);
+            Logger.Warn($"connectionString: {this.ConnectionString}; DataBaseType:{this.DataBaseType}");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -40,16 +42,16 @@ namespace DM.Log.Dal
                     switch (DataBaseType)
                     {
                         case DbType.Oracle:
-                            optionsBuilder.UseOracle(connectionString);
+                            optionsBuilder.UseOracle(ConnectionString);
                             break;
                         case DbType.SqlServer:
-                            optionsBuilder.UseSqlServer(connectionString);
+                            optionsBuilder.UseSqlServer(ConnectionString);
                             break;
                         case DbType.MySql:
-                            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                            optionsBuilder.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
                             break;
                         default:
-                            optionsBuilder.UseOracle(connectionString);
+                            optionsBuilder.UseOracle(ConnectionString);
                             break;
                     }
                 }
