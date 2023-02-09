@@ -45,7 +45,7 @@ namespace DM.Log.Service.Controllers
         }
 
         [HttpGet]
-        public async Task<List<string>> GetDeviceList()
+        public async Task<Response<List<string>>> GetDeviceList()
         {
             return await this.dotaRunService.GetDeviceListAsync();
         }
