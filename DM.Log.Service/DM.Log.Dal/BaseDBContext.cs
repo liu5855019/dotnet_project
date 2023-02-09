@@ -24,11 +24,14 @@ namespace DM.Log.Dal
         public BaseDBContext(DbContextOptions options) : base(options)
         {
             var configuration = ConfigurationBuilderExtensions.ConfigurationRoot();
-
             this.ConnectionString = configuration.GetSection("ConnectionStrings:DefaultConnection").Value;
             this.DataBaseType = Enum.Parse<DbType>(configuration.GetSection("ConnectionStrings:DefaultType").Value);
 
-            Console.WriteLine(this.ConnectionString);
+            if (string.IsNullOrWhiteSpace(this.ConnectionString))
+            {
+                throw new DmException("please set appsetting : ConnectionStrings:DefaultConnection");
+            }
+
             Logger.Warn($"connectionString: {this.ConnectionString}; DataBaseType:{this.DataBaseType}");
         }
 
