@@ -51,7 +51,7 @@ namespace DM.Log.Service.Controllers
         }
 
         [HttpGet]
-        public async Task<List<NameAndCount>> GetGroupListByDeviceId(string deviceId)
+        public async Task<Response<List<NameAndCount>>> GetGroupListByDeviceId(string deviceId)
         { 
             return await this.dotaRunService.GetGroupListByDeviceIdAsync(deviceId);
         }

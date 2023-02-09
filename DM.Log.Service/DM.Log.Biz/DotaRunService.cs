@@ -84,12 +84,13 @@
             catch (Exception ex)
             {
                 logger.Error($"GetDeviceListAsync(); Error:{ex.Message}");
-                throw;
+                return response.SetFailed(ex.Message);
             }
         }
 
-        public async Task<List<NameAndCount>> GetGroupListByDeviceIdAsync(string deviceId)
+        public async Task<Response<List<NameAndCount>>> GetGroupListByDeviceIdAsync(string deviceId)
         {
+            var response = new Response<List<NameAndCount>>();
             try
             {
                 logger.Debug($"{LogConsts.End}; GetGroupListByDeviceIdAsync(); start sql");
@@ -102,12 +103,12 @@
                                     .ToListAsync();
 
                 logger.Debug($"{LogConsts.End}; GetGroupListByDeviceIdAsync(); Count:{list.Count}");
-                return list;
+                return response.SetSuccess(list);
             }
             catch (Exception ex)
             {
                 logger.Error($"GetGroupListByDeviceIdAsync(); Error:{ex.Message}");
-                throw;
+                return response.SetFailed(ex.Message);
             }
         }
 

@@ -13,6 +13,6 @@
 
 
         Task<Response<List<string>>> GetDeviceListAsync();
-        Task<List<NameAndCount>> GetGroupListByDeviceIdAsync(string deviceId);
+        Task<Response<List<NameAndCount>>> GetGroupListByDeviceIdAsync(string deviceId);
     }
 }

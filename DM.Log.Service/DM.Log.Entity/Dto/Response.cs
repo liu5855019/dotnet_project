@@ -4,7 +4,7 @@
     {
         public long Code { get; set; }
 
-        public string Desc { get; set; } = "";
+        public string Message { get; set; } = "";
     }
 
 
@@ -15,9 +15,16 @@
         public Response<T> SetSuccess(T data)
         {
             this.Code = 200;
-            this.Desc = "Success.";
-
+            this.Message = "Success.";
             this.Data = data;
+
+            return this;
+        }
+
+        public Response<T> SetFailed(string message, long code = 500)
+        {
+            this.Code = code;
+            this.Message = message;
 
             return this;
         }
