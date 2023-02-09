@@ -6,9 +6,7 @@ namespace DM.Log.Service.Controllers
     using DM.Log.Entity;
     using Microsoft.AspNetCore.Mvc;
     using NLog;
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     [ApiController]
