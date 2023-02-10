@@ -28,27 +28,11 @@ namespace DM.Log.Service
                     logging.AddNLog(new NLogProviderOptions { IncludeActivityIdsWithBeginScope = true });
                 });
 
-            //builder.Services.setdbcontext
+
             ConfigureServices(builder.Services, builder.Configuration);
 
-
             var app = builder.Build();
-
             Configure(app, app.Lifetime, app.Configuration);
-
-            // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
 
             app.Run();
         }
@@ -72,39 +56,28 @@ namespace DM.Log.Service
             services.AddScoped<IDotaRunService, DotaRunService>();
             services.AddScoped<ILogInterfaceService, LogInterfaceService>();
 
-            //services.AddSingleton<IRunService, RunService>();
-            //services.AddSingleton<IDteMessageBusPublish, DteMessageBusPublish>();
-            //services.AddSingleton<DteMessageBusSubscribe>();
-            //services.AddSingleton<IVehicleTripDetailService, VehicleTripDetailService>();
+
 
 
             ////如果需要让API/Grpc service访问Grpc service附上自身的token, 这一句必须加上(1/2)
             //services.AddHttpContextAccessor();
 
-            //services.AddControllers();
-            //#region Swagger
-            //services.AddEndpointsApiExplorer();
-            //services.AddSwaggerGen();
-            //services.AddSwaggerGen(options =>
-            //{
-            //    options.SwaggerDoc("v1", new OpenApiInfo
-            //    {
-            //        Version = "v1.0",
-            //        Title = $"Dte Service Api ——{RuntimeInformation.FrameworkDescription}"
-            //    });
-            //});
-            //#endregion
-
-            //// Cors
-            //services.AddCors(setupAction =>
-            //{
-            //    setupAction.AddPolicy("all", setupAction =>
-            //    {
-            //        setupAction.AllowAnyOrigin();
-            //        setupAction.AllowAnyHeader();
-            //        setupAction.AllowAnyMethod();
-            //    });
-            //});
+            #region 配置跨域 Cors
+            //JwtCertConfig.Config.Path = configuration["JwtCertConfig:Path"]?.Replace('\\', Path.DirectorySeparatorChar);
+            //JwtCertConfig.Config.Pwd = configuration["JwtCertConfig:Pwd"];
+            
+            var hostList = configuration.GetSection("Cors").GetChildren().Select(w => w.Value).ToArray();
+            services.AddCors(setupAction =>
+            {
+                setupAction.AddPolicy("cors", setupAction =>
+                {
+                    //setupAction.AllowAnyOrigin();
+                    setupAction.AllowAnyHeader();
+                    setupAction.AllowAnyMethod();
+                    setupAction.AllowCredentials().WithOrigins(hostList);
+                });
+            });
+            #endregion
 
         }
 
@@ -115,21 +88,28 @@ namespace DM.Log.Service
             //IHttpContextAccessor hca
             )
         {
-            //app.UseSwagger();
-            //app.UseSwaggerUI(c =>
-            //{
-            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dte Service Api v1.0");
-            //});
-            //app.UseCors("all");
-            //app.MapControllers();
+            //if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
 
-            //// Configure the HTTP request pipeline.
-            //app.MapGrpcService<ScenarioGrpcSrv>();
-            //app.MapGrpcService<ScenarioRecordGrpcSrv>();
+            // 配置跨域
+            app.UseCors("cors");
 
-            //app.MapGrpcReflectionService();
 
-            //app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+
+
+
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
+
+
+            app.MapControllers();
+
+
+
 
             ////如果需要让API/Grpc service访问Grpc service附上自身的token, 这一句必须加上(2/2)
             //GrpcClientInterceptor.SetHttpContextAccessor(app.Services.GetRequiredService<IHttpContextAccessor>());
