@@ -58,6 +58,7 @@
                                  .AsNoTracking()
                                  .Where(w => w.DeviceId == DeviceId)
                                  .WhereIf(w => w.GroupId == GroupId, !string.IsNullOrWhiteSpace(GroupId))
+                                 .OrderBy(w => w.CreateDt)
                                  .ToListAsync();
 
             logger.Debug($"{LogConsts.End}; AddLogAsync(); Count:{list.Count}");
