@@ -15,7 +15,9 @@ namespace DM.Log.Common
         public readonly IHttpContextAccessor httpContext;
 
 
-        public RequestInfo(IHttpContextAccessor httpContext)
+        public RequestInfo(
+            IHttpContextAccessor httpContext
+            )
         {
             this.httpContext = httpContext;
 

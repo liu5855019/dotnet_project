@@ -4,6 +4,7 @@ namespace DM.Log.Service
 {
     using DM.Log.Biz;
     using DM.Log.Biz.Interface;
+    using DM.Log.Common;
     using DM.Log.Dal;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.Configuration;
@@ -47,8 +48,7 @@ namespace DM.Log.Service
 
             services.AddDbContext<LogDBContext>();
 
-            //services.AddScoped<RequestInfo>();
-            //services.AddScoped<RequestInfo>();
+            services.AddScoped<RequestInfo>();
             //services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
 
             //// add grpc client
@@ -60,7 +60,8 @@ namespace DM.Log.Service
 
 
             ////如果需要让API/Grpc service访问Grpc service附上自身的token, 这一句必须加上(1/2)
-            //services.AddHttpContextAccessor();
+            // 注册 IHttpContextAccessor
+            services.AddHttpContextAccessor();
 
             #region 配置跨域 Cors
             //JwtCertConfig.Config.Path = configuration["JwtCertConfig:Path"]?.Replace('\\', Path.DirectorySeparatorChar);
