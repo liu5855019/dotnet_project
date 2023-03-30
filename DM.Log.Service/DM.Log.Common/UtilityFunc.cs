@@ -6,15 +6,7 @@ namespace DM.Log.Common
 
     public static class UtilityFunc
     {
-        #region Json
 
-        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Serialize };
-
-        public static string ToJsonString(this object obj, Formatting formatting = Formatting.None) => JsonConvert.SerializeObject(obj, formatting, JsonSerializerSettings);
-
-        public static T ToJsonObj<T>(this string json) => JsonConvert.DeserializeObject<T>(json);
-
-        #endregion
 
         #region MyRegion
         public static T SetInsertProperties<T>(this T t, RequestInfo requestInfo) where T : BaseEntity
@@ -39,9 +31,6 @@ namespace DM.Log.Common
             return t;
         }
         #endregion
-
-
-
 
     }
 }

@@ -11,6 +11,7 @@ namespace DM.Log.Service
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
     using NLog.Extensions.Logging;
     using System.Linq;
 
@@ -45,28 +46,25 @@ namespace DM.Log.Service
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
-
+            #region regist basic
             services.AddDbContext<LogDBContext>();
 
             services.AddScoped<RequestInfo>();
             //services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
 
-            //// add grpc client
-
-            services.AddScoped<IDotaRunService, DotaRunService>();
-            services.AddScoped<ILogInterfaceService, LogInterfaceService>();
-
-
-
-
             ////如果需要让API/Grpc service访问Grpc service附上自身的token, 这一句必须加上(1/2)
             // 注册 IHttpContextAccessor
             services.AddHttpContextAccessor();
+            #endregion
 
-            #region 配置跨域 Cors
-            //JwtCertConfig.Config.Path = configuration["JwtCertConfig:Path"]?.Replace('\\', Path.DirectorySeparatorChar);
-            //JwtCertConfig.Config.Pwd = configuration["JwtCertConfig:Pwd"];
-            
+
+            #region regist service
+            services.AddScoped<IDotaRunService, DotaRunService>();
+            services.AddScoped<ILogInterfaceService, LogInterfaceService>();
+            #endregion
+
+
+            #region config Cors
             var hostList = configuration.GetSection("Cors").GetChildren().Select(w => w.Value).ToArray();
             services.AddCors(setupAction =>
             {
@@ -100,11 +98,23 @@ namespace DM.Log.Service
 
 
 
-
-
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+            app.Use(async (context, next) =>
+            {
+                System.Console.WriteLine("~~~~~~~~~~~~ use1 start");
+                await next(context);
+                System.Console.WriteLine("~~~~~~~~~~~~ use1 end");
+            });
+
+            app.Use(async (context, next) =>
+            {
+                System.Console.WriteLine("~~~~~~~~~~~~ use2 start");
+                await next(context);
+                System.Console.WriteLine("~~~~~~~~~~~~ use2 end");
+            });
 
 
             app.MapControllers();
@@ -112,8 +122,6 @@ namespace DM.Log.Service
 
 
 
-            ////如果需要让API/Grpc service访问Grpc service附上自身的token, 这一句必须加上(2/2)
-            //GrpcClientInterceptor.SetHttpContextAccessor(app.Services.GetRequiredService<IHttpContextAccessor>());
 
             //// token 验证
             //JwtCertConfig.Config.Path = configuration["JwtCertConfig:Path"]?.Replace('\\', Path.DirectorySeparatorChar);
