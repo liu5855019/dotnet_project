@@ -84,11 +84,7 @@ namespace DM.Log.Common
             }
             catch
             {
-#if DEBUG
                 return new Random().Next();
-#else
-                return 0;
-#endif
             }
         }
 
