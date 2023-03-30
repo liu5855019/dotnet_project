@@ -1,33 +1,28 @@
 ﻿namespace DM.Log.Biz
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using DM.Log.Biz.Interface;
     using DM.Log.Common;
     using DM.Log.Dal;
     using DM.Log.Entity;
     using Microsoft.EntityFrameworkCore;
-    using NLog;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
-    public class DotaRunService : IDotaRunService
+    public class DotaRunService : BaseService, IDotaRunService
     {
-        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
-        private readonly LogDBContext dBContext;
-
-        public RequestInfo RequestInfo { get; set; }
-
         public DotaRunService(
+            RequestInfo requestInfo,
             LogDBContext dBContext
-            )
-        {
-            this.dBContext = dBContext;
+            ) : base( requestInfo, dBContext ) 
+        { 
+        
         }
 
         public async Task<LogDotaRun> AddLogAsync(LogDotaRun logDotaRun)
         {
-            logger.Debug( $"{LogConsts.Start}; AddLogAsync(); logDotaRun:{logDotaRun.ToJsonString()}");
+            LogInfo($"{LogConsts.Start}; AddLogAsync(); logDotaRun:{logDotaRun.ToJsonString()}");
             try
             {
                 logDotaRun.DeviceId.CheckPara(nameof(logDotaRun.DeviceId));
@@ -38,11 +33,11 @@
                 await this.dBContext.AddAsync(logDotaRun);
                 var count = await this.dBContext.SaveChangesAsync();
 
-                logger.Debug($"{LogConsts.End}; AddLogAsync(); Count:{count}");
+                LogInfo($"{LogConsts.End}; AddLogAsync(); Count:{count}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex, $"{LogConsts.End}; AddLogAsync(); Error:{ex.Message}");
+                LogError(ex, $"{LogConsts.End}; AddLogAsync(); Error:{ex.Message}");
                 throw;
             }
 
