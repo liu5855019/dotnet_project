@@ -7,13 +7,18 @@ namespace DM.Log.Service
     using DM.Log.Common;
     using DM.Log.Dal;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using NLog.Extensions.Logging;
+    using System.IO;
+    using System;
     using System.Linq;
+    using System.Net.Http;
+    using System.Runtime.CompilerServices;
 
     public class Program
     {
@@ -84,7 +89,6 @@ namespace DM.Log.Service
             WebApplication app,
             IHostApplicationLifetime lifetime,
             IConfiguration configuration
-            //IHttpContextAccessor hca
             )
         {
             //if (app.Environment.IsDevelopment())
@@ -93,8 +97,42 @@ namespace DM.Log.Service
                 app.UseSwaggerUI();
             }
 
+            app.UseMiddleware<DMLoggingMiddleware>();
+
+            //app.Use(async (context, next) =>
+            //{
+            //    System.Console.WriteLine("~~~~~~~~~~~~ use1 start");
+
+            //    using var ms = new MemoryStream();
+            //    var oldBody = context.Response.Body;
+            //    context.Response.Body = ms;
+            //    try
+            //    {
+            //        await next(context);
+
+            //    }
+            //    catch (Exception)
+            //    {
+
+            //        throw;
+            //    }
+            //    finally
+            //    {
+            //        ms.Seek(0, SeekOrigin.Begin);
+            //        string body = new StreamReader(ms).ReadToEnd();
+            //        ms.Seek(0, SeekOrigin.Begin);
+            //        await ms.CopyToAsync(oldBody);
+            //        context.Response.Body = oldBody;
+
+            //        Program.LogHttpContext(context);
+            //        System.Console.WriteLine("~~~~~~~~~~~~ use1 end");
+            //    }
+
+
+            //});
+
+
             // 配置跨域
-            app.UseCors("cors");
 
 
 
@@ -102,12 +140,6 @@ namespace DM.Log.Service
 
             app.UseAuthorization();
 
-            app.Use(async (context, next) =>
-            {
-                System.Console.WriteLine("~~~~~~~~~~~~ use1 start");
-                await next(context);
-                System.Console.WriteLine("~~~~~~~~~~~~ use1 end");
-            });
 
             app.Use(async (context, next) =>
             {
@@ -156,6 +188,31 @@ namespace DM.Log.Service
             //    //app.Services.GetRequiredService<IComService>().CloseTerminal();
             //    logger.Info("App stopped");
             //});
+        }
+
+        public static void LogHttpContext(HttpContext context)
+        {
+            var connectId = context.Connection.Id;
+            var localIpAddress = context.Connection.LocalIpAddress;
+            var localPort = context.Connection.LocalPort;
+            var clientIpAddress = context.Connection.RemoteIpAddress;
+            var clientPort = context.Connection.RemotePort;
+            // var 
+
+
+            var requestMethod = context.Request.Method;
+            var requestPath = context.Request.Path;
+            var requestBody = context.Request.Body;
+            var requestHeaders = context.Request.Headers;
+            var requestCookies = context.Request.Cookies;
+            var requestQueryString = context.Request.QueryString;
+
+
+            var responseHeaders = context.Response.Headers;
+            var responseCookies = context.Response.Cookies;
+            var responseStatusCode = context.Response.StatusCode;
+            var responseContentType = context.Response.ContentType;
+            var response = context.Response.ToString();
         }
 
     }
