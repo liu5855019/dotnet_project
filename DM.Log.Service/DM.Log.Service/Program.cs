@@ -19,6 +19,7 @@ namespace DM.Log.Service
     using System.Linq;
     using System.Net.Http;
     using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
 
     public class Program
     {
@@ -97,7 +98,16 @@ namespace DM.Log.Service
                 app.UseSwaggerUI();
             }
 
+           
+
+
             app.UseMiddleware<DMLoggingMiddleware>();
+            DMLoggingMiddleware.logDelegate = content =>
+            {
+                Console.WriteLine("logDelegate");
+                Console.WriteLine(content.ToJsonString());
+                return Task.CompletedTask;
+            };
 
             //app.Use(async (context, next) =>
             //{
@@ -190,30 +200,6 @@ namespace DM.Log.Service
             //});
         }
 
-        public static void LogHttpContext(HttpContext context)
-        {
-            var connectId = context.Connection.Id;
-            var localIpAddress = context.Connection.LocalIpAddress;
-            var localPort = context.Connection.LocalPort;
-            var clientIpAddress = context.Connection.RemoteIpAddress;
-            var clientPort = context.Connection.RemotePort;
-            // var 
-
-
-            var requestMethod = context.Request.Method;
-            var requestPath = context.Request.Path;
-            var requestBody = context.Request.Body;
-            var requestHeaders = context.Request.Headers;
-            var requestCookies = context.Request.Cookies;
-            var requestQueryString = context.Request.QueryString;
-
-
-            var responseHeaders = context.Response.Headers;
-            var responseCookies = context.Response.Cookies;
-            var responseStatusCode = context.Response.StatusCode;
-            var responseContentType = context.Response.ContentType;
-            var response = context.Response.ToString();
-        }
 
     }
 }
