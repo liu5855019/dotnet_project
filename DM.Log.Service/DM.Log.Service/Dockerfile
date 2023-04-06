@@ -9,7 +9,6 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ../* .
 WORKDIR "/src/DM.Log.Service"
-RUN ls
 RUN dotnet publish "DM.Log.Service.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
