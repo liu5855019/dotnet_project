@@ -24,6 +24,7 @@ namespace DM.Log.Common
             using var ms = new MemoryStream();
             var oldBody = context.Response.Body;
             context.Response.Body = ms;
+            var startDate = DateTime.Now;
             try
             {
                 await next(context);
@@ -43,7 +44,7 @@ namespace DM.Log.Common
 
                 if (logDelegate != null)
                 {
-                    _ = logDelegate(new DMHttpContent(context, body));
+                    _ = logDelegate(new DMHttpContent(context, startDate, body));
                 }
             }
         }
@@ -58,6 +59,7 @@ namespace DM.Log.Common
         public string ClientIpAddress { get; set; }
         public int ClientPort { get; set; }
 
+        public DateTime RequestDt { get; set; }
         public string RequestHost { get; set; }
         public string RequestMethod { get; set; }
         public string RequestPath { get; set; }
@@ -65,13 +67,14 @@ namespace DM.Log.Common
         public string RequestHeaders { get; set; }
         public string RequestQueryString { get; set; }
 
+        public DateTime ResponseDt { get; set; }
         public string ResponseHeaders { get; set; }
         public int ResponseStatusCode { get; set; }
         public string ResponseBody { get; set; }
 
         public DMHttpContent() { }
 
-        public DMHttpContent(HttpContext context, string responseBody)
+        public DMHttpContent(HttpContext context, DateTime requestDt, string responseBody = "", DateTime? responseDt = null)
         {
             try
             {
@@ -81,6 +84,7 @@ namespace DM.Log.Common
                 this.ClientIpAddress = context.Connection.RemoteIpAddress.ToString();
                 this.ClientPort = context.Connection.RemotePort;
 
+                this.RequestDt = requestDt;
                 this.RequestHost = context.Request.Host.Host;
                 this.RequestMethod = context.Request.Method;
                 this.RequestPath = context.Request.Path;
@@ -93,6 +97,7 @@ namespace DM.Log.Common
                     this.RequestBody = strBody;
                 }
 
+                this.ResponseDt = responseDt ?? DateTime.Now;
                 this.ResponseHeaders = context.Response.Headers.ToJsonString();
                 this.ResponseStatusCode = context.Response.StatusCode;
                 this.ResponseBody = responseBody;

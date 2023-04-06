@@ -10,18 +10,13 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public class LogInterfaceService : ILogInterfaceService
+    public class LogInterfaceService : BaseService, ILogInterfaceService
     {
-        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
-        private readonly LogDBContext dBContext;
-
-        public RequestInfo RequestInfo { get; set; }
-
         public LogInterfaceService(
+            RequestInfo requestInfo,
             LogDBContext dBContext
-            )
+            ): base(requestInfo, dBContext)
         {
-            this.dBContext = dBContext;
         }
 
         public async Task<LogInterface> AddLogAsync(LogInterface logInterface)
@@ -30,7 +25,7 @@
             try
             {
                 logInterface.Service.CheckPara(nameof(logInterface.Service));
-                logInterface.Name.CheckPara(nameof(logInterface.Name));
+                logInterface.RequestPath.CheckPara(nameof(logInterface.RequestPath));
 
                 logInterface.SetInsertProperties(this.RequestInfo);
 
@@ -54,7 +49,7 @@
             var list = await this.dBContext
                                  .LogInterface
                                  .WhereIf(w => w.Service == service, !string.IsNullOrWhiteSpace(service))
-                                 .WhereIf(w => w.Name == name, !string.IsNullOrWhiteSpace(name))
+                                 .WhereIf(w => w.RequestPath == name, !string.IsNullOrWhiteSpace(name))
                                  .ToListAsync();
 
             logger.Debug($"{LogConsts.End}; AddLogAsync(); Count:{list.Count}");

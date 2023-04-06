@@ -2,9 +2,10 @@ namespace DM.Log.Entity
 {
     using DM.BaseEntity;
     using Microsoft.EntityFrameworkCore;
+    using System;
     using System.ComponentModel.DataAnnotations;
 
-    [Index(nameof(Service), nameof(Name))]
+    [Index(nameof(Service), nameof(RequestPath))]
     public class LogInterface : BaseEntity
     {
         [Required]
@@ -12,16 +13,29 @@ namespace DM.Log.Entity
         [Comment("Service Name")]
         public string Service { get; set; }
 
+
         [Required]
         [StringLength(100)]
-        [Comment("Interface Name")]
-        public string Name { get; set; }
+        public string RequestPath { get; set; }
 
-        [StringLength(500)]
-        [Comment("Para")]
-        public string Value { get; set; }
+        [StringLength(1000)]
+        public string RequestPara { get; set; }
 
-        [StringLength(500)]
+        [StringLength(1000)]
+        public string RequestHeader { get; set; }
+
+        public DateTime? RequestDt { get; set; }
+
+        [StringLength(2000)]
+        public string Response { get; set; }
+
+        [StringLength(1000)]
+        public string ResponseHeader { get; set; }
+
+        public DateTime? ResponseDt { get; set; }
+
+
+        [StringLength(2000)]
         [Comment("Remark")]
         public string Remark { get; set; }
     }

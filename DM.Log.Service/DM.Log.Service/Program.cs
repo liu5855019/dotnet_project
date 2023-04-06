@@ -20,9 +20,12 @@ namespace DM.Log.Service
     using System.Net.Http;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
+    using NLog;
 
     public class Program
     {
+        public static Logger logger = LogManager.GetLogger(nameof(Program));
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -92,6 +95,8 @@ namespace DM.Log.Service
             IConfiguration configuration
             )
         {
+            #region Middleware
+
             //if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -105,29 +110,6 @@ namespace DM.Log.Service
 
             app.UseAuthorization();
 
-            app.UseMiddleware<DMLoggingMiddleware>();
-            DMLoggingMiddleware.logDelegate = content =>
-            {
-                Console.WriteLine("logDelegate");
-                Console.WriteLine(content.ToJsonString());
-                return Task.CompletedTask;
-            };
-
-
-            app.Use(async (context, next) =>
-            {
-                System.Console.WriteLine("~~~~~~~~~~~~ use2 start");
-                await next(context);
-                System.Console.WriteLine("~~~~~~~~~~~~ use2 end");
-            });
-
-
-            app.MapControllers();
-
-
-
-
-
             //// token 验证
             //JwtCertConfig.Config.Path = configuration["JwtCertConfig:Path"]?.Replace('\\', Path.DirectorySeparatorChar);
             //JwtCertConfig.Config.Pwd = configuration["JwtCertConfig:Pwd"];
@@ -138,7 +120,23 @@ namespace DM.Log.Service
             //    )
             //);
 
+            app.UseMiddleware<DMLoggingMiddleware>();
 
+            app.Use(async (context, next) =>
+            {
+                logger.Debug("~~~~~~~~~~~~ use2 start");
+                await next(context);
+                logger.Debug("~~~~~~~~~~~~ use2 end");
+            });
+
+
+            app.MapControllers();
+
+            #endregion
+
+
+
+            #region LifeTime
 
             lifetime.ApplicationStarted.Register(() =>
             {
@@ -147,20 +145,30 @@ namespace DM.Log.Service
                 var dBContext = scope.ServiceProvider.GetRequiredService<LogDBContext>();
                 System.Console.WriteLine(dBContext);
 
-                var a = dBContext.LogInterface.FirstOrDefault();
-                System.Console.WriteLine(a);
+                //var a = dBContext.LogInterface.FirstOrDefault();
+                //System.Console.WriteLine(a);
             });
 
 
+            lifetime.ApplicationStopped.Register(() =>
+            {
+                logger.Info("App stopped");
+            });
+
+            #endregion
 
 
 
+            #region Other
 
-            //lifetime.ApplicationStopped.Register(() =>
-            //{
-            //    //app.Services.GetRequiredService<IComService>().CloseTerminal();
-            //    logger.Info("App stopped");
-            //});
+            DMLoggingMiddleware.logDelegate = content =>
+            {
+                logger.Debug($"start logDelegate: {content.ToJsonString()}");
+                var scope = app.Services.CreateScope();
+                return Task.CompletedTask;
+            };
+
+            #endregion
         }
 
 

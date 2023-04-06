@@ -30,10 +30,20 @@ namespace DM.Log.Service.Controllers
             var result = await this.service.AddLogAsync(new LogInterface
             { 
                 Service = service,
-                Name = name,
-                Value = value,
+                RequestPath = name,
+                RequestPara = value,
                 Remark = remark
             });
+
+            logger.Debug($"{LogConsts.End}; AddLog(); result:{result.ToJsonString()}");
+            return result;
+        }
+
+
+        [HttpPost]
+        public async Task<LogInterface> AddLogInterface(LogInterface logInterface)
+        {
+            var result = await this.service.AddLogAsync(logInterface);
 
             logger.Debug($"{LogConsts.End}; AddLog(); result:{result.ToJsonString()}");
             return result;
