@@ -98,8 +98,12 @@ namespace DM.Log.Service
                 app.UseSwaggerUI();
             }
 
-           
+            // 配置跨域
+            app.UseCors("cors");
 
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
 
             app.UseMiddleware<DMLoggingMiddleware>();
             DMLoggingMiddleware.logDelegate = content =>
@@ -108,47 +112,6 @@ namespace DM.Log.Service
                 Console.WriteLine(content.ToJsonString());
                 return Task.CompletedTask;
             };
-
-            //app.Use(async (context, next) =>
-            //{
-            //    System.Console.WriteLine("~~~~~~~~~~~~ use1 start");
-
-            //    using var ms = new MemoryStream();
-            //    var oldBody = context.Response.Body;
-            //    context.Response.Body = ms;
-            //    try
-            //    {
-            //        await next(context);
-
-            //    }
-            //    catch (Exception)
-            //    {
-
-            //        throw;
-            //    }
-            //    finally
-            //    {
-            //        ms.Seek(0, SeekOrigin.Begin);
-            //        string body = new StreamReader(ms).ReadToEnd();
-            //        ms.Seek(0, SeekOrigin.Begin);
-            //        await ms.CopyToAsync(oldBody);
-            //        context.Response.Body = oldBody;
-
-            //        Program.LogHttpContext(context);
-            //        System.Console.WriteLine("~~~~~~~~~~~~ use1 end");
-            //    }
-
-
-            //});
-
-
-            // 配置跨域
-
-
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
 
 
             app.Use(async (context, next) =>
