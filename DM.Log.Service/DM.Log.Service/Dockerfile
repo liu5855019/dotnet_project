@@ -7,7 +7,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ../* .
+COPY ../* /src/
 WORKDIR "/src/DM.Log.Service"
 RUN dotnet publish "DM.Log.Service.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
