@@ -4,7 +4,7 @@ echo "start publish..."
 pwd
 
 echo "start git pull"
-# git pull
+git pull
 echo "git pull done"
 
 rm -rf /root/dockers/dm_log/DM.Log.Service/*
