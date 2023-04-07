@@ -54,7 +54,7 @@ namespace DM.Log.Common
                 {
                     if (logDelegate != null)
                     {
-                        _ = logDelegate(new DMHttpContent(null, startDate, body));
+                        _ = logDelegate(new DMHttpContent(context, startDate, body));
                     }
                 }
                 catch (Exception ex)
