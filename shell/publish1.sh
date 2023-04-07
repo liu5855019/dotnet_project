@@ -19,6 +19,6 @@ pwd
 docker-compose up -d --build dm_log
 
 
-# docker logs -f dm_log
+docker logs -f dm_log
 
 
