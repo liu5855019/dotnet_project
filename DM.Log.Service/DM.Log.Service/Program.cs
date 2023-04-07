@@ -6,21 +6,21 @@ namespace DM.Log.Service
     using DM.Log.Biz.Interface;
     using DM.Log.Common;
     using DM.Log.Dal;
+    using DM.Log.Entity;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
+    using NLog;
     using NLog.Extensions.Logging;
-    using System.IO;
+    using System.ComponentModel.DataAnnotations;
     using System;
     using System.Linq;
-    using System.Net.Http;
-    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
-    using NLog;
+    using System.Runtime.CompilerServices;
 
     public class Program
     {
@@ -165,6 +165,19 @@ namespace DM.Log.Service
             {
                 logger.Debug($"start logDelegate: {content.ToJsonString()}");
                 var scope = app.Services.CreateScope();
+                var logService = scope.ServiceProvider.GetRequiredService<ILogInterfaceService>();
+                _ = logService.AddLogAsync(new LogInterface()
+                {
+                    Service = typeof(Program).Namespace,
+                    RequestPath = content.RequestPath,
+                    RequestPara = content.RequestQueryString + content.RequestBody,
+                    RequestHeader = content.RequestHeaders,
+                    RequestDt = content.RequestDt,
+                    Response = content.ResponseBody,
+                    ResponseHeader = content.ResponseHeaders,
+                    ResponseDt = content.ResponseDt,
+                    Remark = content.ToJsonString(),
+                });
                 return Task.CompletedTask;
             };
 

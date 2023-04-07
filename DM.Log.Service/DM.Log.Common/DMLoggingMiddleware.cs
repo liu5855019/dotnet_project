@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +11,7 @@ namespace DM.Log.Common
 {
     public class DMLoggingMiddleware
     {
+        public static Logger logger = LogManager.GetCurrentClassLogger();
         public static LogDelegate logDelegate;
 
         private readonly RequestDelegate next;
@@ -21,6 +23,12 @@ namespace DM.Log.Common
 
         public async Task InvokeAsync(HttpContext context)
         {
+            if (context.Request.Path.Value.StartsWith("/LogInterface"))
+            {
+                await next(context);
+                return;
+            }
+
             using var ms = new MemoryStream();
             var oldBody = context.Response.Body;
             context.Response.Body = ms;
@@ -42,9 +50,16 @@ namespace DM.Log.Common
                 await ms.CopyToAsync(oldBody);
                 context.Response.Body = oldBody;
 
-                if (logDelegate != null)
+                try
                 {
-                    _ = logDelegate(new DMHttpContent(context, startDate, body));
+                    if (logDelegate != null)
+                    {
+                        _ = logDelegate(new DMHttpContent(null, startDate, body));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, $"DMLoggingMiddleware Error:{ex.Message}");
                 }
             }
         }
@@ -74,6 +89,7 @@ namespace DM.Log.Common
 
         public DMHttpContent() { }
 
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         public DMHttpContent(HttpContext context, DateTime requestDt, string responseBody = "", DateTime? responseDt = null)
         {
             try
@@ -104,7 +120,7 @@ namespace DM.Log.Common
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                logger.Error(ex, $"DMHttpContent Error:{ex.Message}");
             }
         }
     }
