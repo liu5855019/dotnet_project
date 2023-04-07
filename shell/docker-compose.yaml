@@ -2,7 +2,7 @@ version: '3.7'
 services:
 
   dm_log:
-    build: dm_log/
+    build: ./dm_log/DM.Log.Service
     container_name: dm_log
     restart: always
     volumes:
