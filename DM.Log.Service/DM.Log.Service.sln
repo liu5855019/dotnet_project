@@ -13,9 +13,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DM.BaseEntity", "DM.BaseEnt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DM.Log.Entity", "DM.Log.Entity\DM.Log.Entity.csproj", "{2B856B00-B73E-4FF1-85E8-4B664033EB07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DM.Log.Biz", "DM.Log.Biz\DM.Log.Biz.csproj", "{FA554AD6-B511-4E4E-9D51-C392890D52C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DM.Log.Biz", "DM.Log.Biz\DM.Log.Biz.csproj", "{FA554AD6-B511-4E4E-9D51-C392890D52C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DM.Log.Biz.Interface", "DM.Log.Biz.Interface\DM.Log.Biz.Interface.csproj", "{ACBC99B5-85B0-485E-9445-B09AFDA83224}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DM.Log.Biz.Interface", "DM.Log.Biz.Interface\DM.Log.Biz.Interface.csproj", "{ACBC99B5-85B0-485E-9445-B09AFDA83224}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{3781703E-66D1-4C93-8554-056393467C7A}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
